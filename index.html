@@ -21,6 +21,30 @@
 
   <body>
     <div id="root"></div>
+    <script>
+      // Polyfill for Performance API
+      if (!window.performance) {
+        window.performance = {};
+      }
+      if (!performance.clearMarks) {
+        performance.clearMarks = function() {};
+      }
+      if (!performance.mark) {
+        performance.mark = function() {};
+      }
+      if (!performance.measure) {
+        performance.measure = function() {};
+      }
+      if (!performance.clearMeasures) {
+        performance.clearMeasures = function() {};
+      }
+      if (!performance.getEntriesByName) {
+        performance.getEntriesByName = function() { return []; };
+      }
+      if (!performance.getEntriesByType) {
+        performance.getEntriesByType = function() { return []; };
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
