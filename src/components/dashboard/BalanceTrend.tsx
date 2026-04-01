@@ -14,6 +14,18 @@ export function BalanceTrend() {
     return formatCurrencyDetailed(convertedAmount, currency, 0);
   };
 
+  const abbreviateAmount = (amount: number) => {
+    const convertedAmount = convertCurrency(amount, 'USD', currency);
+    if (convertedAmount >= 1000000) {
+      return `${(convertedAmount / 1000000).toFixed(0)}M`;
+    } else if (convertedAmount >= 100000) {
+      return `${(convertedAmount / 100000).toFixed(0)}L`;
+    } else if (convertedAmount >= 1000) {
+      return `${(convertedAmount / 1000).toFixed(0)}K`;
+    }
+    return convertedAmount.toFixed(0);
+  };
+
   const data = useMemo(() => {
     const monthly: Record<string, { income: number; expense: number }> = {};
     transactions.forEach(t => {
@@ -97,7 +109,7 @@ export function BalanceTrend() {
       {/* Chart */}
       <div className="h-48 sm:h-56 md:h-72 w-full animate-fadeIn overflow-x-auto" style={{ animationDelay: '100ms' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 15, right: 30, bottom: 15, left: 0 }}>
+          <AreaChart data={data} margin={{ top: 15, right: 30, bottom: 15, left: 80 }}>
             <defs>
               <linearGradient id="balGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(217,91%,60%)" stopOpacity={0.4} />
@@ -122,12 +134,8 @@ export function BalanceTrend() {
             <YAxis 
               tick={{ fill: 'hsl(220,10%,50%)', fontSize: 12 }}
               axisLine={{ stroke: 'hsl(220,13%,91%)' }}
-              width={60}
-              tickFormatter={v => {
-                const convertedValue = convertCurrency(v, 'USD', currency);
-                const formatted = formatCurrencyDetailed(convertedValue, currency, 0);
-                return formatted.substring(0, 8); // Truncate for small space
-              }}
+              width={75}
+              tickFormatter={v => abbreviateAmount(v)}
             />
             <Tooltip
               contentStyle={{ 
