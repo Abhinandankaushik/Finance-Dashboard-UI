@@ -19,11 +19,17 @@ export function DarkModeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      className="h-8 w-8 transition-transform duration-200 hover:scale-110"
+      className="group relative h-9 w-9 rounded-lg transition-all duration-200 hover:bg-primary/10 active:scale-95 dark:hover:bg-primary/20"
       onClick={() => setDark(d => !d)}
       aria-label="Toggle dark mode"
     >
-      {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+      <div className="relative inline-flex items-center justify-center">
+        {dark ? (
+          <Sun className="absolute h-4 w-4 animate-theme-icon text-yellow-500" />
+        ) : (
+          <Moon className="absolute h-4 w-4 animate-theme-icon text-slate-600" />
+        )}
+      </div>
     </Button>
   );
 }

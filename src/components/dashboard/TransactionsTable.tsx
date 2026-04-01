@@ -1,4 +1,6 @@
 import { useFinance } from '@/context/FinanceContext';
+import { useCurrency } from '@/context/CurrencyContext';
+import { convertCurrency, formatCurrencyDetailed } from '@/utils/currency';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -34,9 +36,15 @@ function downloadFile(content: string, filename: string, type: string) {
 
 export function TransactionsTable() {
   const { filteredTransactions, filters, setFilters, role, deleteTransaction } = useFinance();
+  const { currency } = useCurrency();
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [groupBy, setGroupBy] = useState<'none' | 'category' | 'type'>('none');
+
+  const convertAndFormat = (amount: number) => {
+    const convertedAmount = convertCurrency(amount, 'USD', currency);
+    return formatCurrencyDetailed(convertedAmount, currency, 2);
+  };
 
   const toggleSort = (key: 'date' | 'amount') => {
     setFilters(p => ({
@@ -130,7 +138,7 @@ export function TransactionsTable() {
               <h4 className="text-sm font-medium capitalize">{group}</h4>
               <span className="text-xs text-muted-foreground">({txns.length})</span>
               <span className="text-xs font-mono text-muted-foreground sm:ml-auto">
-                ${txns.reduce((s, t) => s + t.amount, 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                {convertAndFormat(txns.reduce((s, t) => s + t.amount, 0))}
               </span>
             </div>
           )}
@@ -164,7 +172,7 @@ export function TransactionsTable() {
                         <span className="text-xs bg-secondary px-2 py-0.5 rounded-full whitespace-nowrap">{t.category}</span>
                       </td>
                       <td className={`py-2 px-2 text-right font-mono font-medium text-xs whitespace-nowrap ${t.type === 'income' ? 'text-income' : 'text-expense'}`}>
-                        {t.type === 'income' ? '+' : '-'}${t.amount.toLocaleString()}
+                        {t.type === 'income' ? '+' : '-'}{convertAndFormat(t.amount).replace(/^-?/, '')}
                       </td>
                       {role === 'admin' && (
                         <td className="py-2 px-2 text-right">

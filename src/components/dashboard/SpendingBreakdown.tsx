@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/context/FinanceContext';
+import { useCurrency } from '@/context/CurrencyContext';
+import { convertCurrency, formatCurrencyDetailed } from '@/utils/currency';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 const COLORS = [
@@ -10,6 +12,12 @@ const COLORS = [
 
 export function SpendingBreakdown() {
   const { transactions } = useFinance();
+  const { currency } = useCurrency();
+
+  const convertAndFormat = (amount: number) => {
+    const convertedAmount = convertCurrency(amount, 'USD', currency);
+    return formatCurrencyDetailed(convertedAmount, currency, 0);
+  };
 
   const data = useMemo(() => {
     const byCategory: Record<string, number> = {};
@@ -38,7 +46,7 @@ export function SpendingBreakdown() {
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, '']} />
+                <Tooltip formatter={(v: number) => [convertAndFormat(v), '']} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -58,7 +66,7 @@ export function SpendingBreakdown() {
                   <div className="flex-1 min-w-0">
                     <div className="text-sm sm:text-base font-medium text-foreground break-words">{d.name}</div>
                     <div className="text-xs sm:text-sm text-muted-foreground">
-                      ${d.value.toLocaleString()} ({percentage}%)
+                      {convertAndFormat(d.value)} ({percentage}%)
                     </div>
                   </div>
                 </div>

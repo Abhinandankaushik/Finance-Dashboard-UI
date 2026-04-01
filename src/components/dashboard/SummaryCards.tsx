@@ -1,30 +1,35 @@
 import { useFinance } from '@/context/FinanceContext';
+import { useCurrency } from '@/context/CurrencyContext';
+import { convertCurrency, formatCurrencyDetailed } from '@/utils/currency';
 import { TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 
 export function SummaryCards() {
   const { totalBalance, totalIncome, totalExpenses, loading } = useFinance();
+  const { currency } = useCurrency();
 
-  const fmt = (n: number) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
+  const convertAndFormat = (amount: number) => {
+    const convertedAmount = convertCurrency(amount, 'USD', currency);
+    return formatCurrencyDetailed(convertedAmount, currency, 0);
+  };
 
   const cards = [
     {
       label: 'Total Balance',
-      value: fmt(totalBalance),
+      value: convertAndFormat(totalBalance),
       icon: Wallet,
       color: 'text-primary',
       bg: 'bg-primary/10',
     },
     {
       label: 'Income',
-      value: fmt(totalIncome),
+      value: convertAndFormat(totalIncome),
       icon: TrendingUp,
       color: 'text-income',
       bg: 'bg-income/10',
     },
     {
       label: 'Expenses',
-      value: fmt(totalExpenses),
+      value: convertAndFormat(totalExpenses),
       icon: TrendingDown,
       color: 'text-expense',
       bg: 'bg-expense/10',
@@ -32,22 +37,25 @@ export function SummaryCards() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
       {cards.map((c, i) => (
         <div
           key={c.label}
-          className="glass-card rounded-xl p-4 sm:p-5 flex items-start gap-3 sm:gap-4 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 animate-count-up"
+          className="glass-card rounded-xl p-5 sm:p-6 flex items-start gap-4 sm:gap-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group animate-count-up cursor-pointer relative overflow-hidden"
           style={{ animationDelay: `${i * 80}ms`, animationFillMode: 'both' }}
         >
-          <div className={`${c.bg} ${c.color} p-2 sm:p-3 rounded-lg transition-transform duration-200 hover:scale-110 flex-shrink-0`}>
-            <c.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+          {/* Background gradient effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          
+          <div className={`${c.bg} ${c.color} p-3 sm:p-4 rounded-lg transition-all duration-300 group-hover:scale-125 group-hover:rotate-6 flex-shrink-0 shadow-md relative z-10`}>
+            <c.icon className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm text-muted-foreground truncate">{c.label}</p>
+          <div className="min-w-0 flex-1 relative z-10">
+            <p className="text-xs sm:text-sm text-muted-foreground/80 font-medium uppercase tracking-wider truncate">{c.label}</p>
             {loading ? (
-              <div className="h-6 sm:h-8 w-20 sm:w-28 bg-muted rounded animate-pulse mt-1" />
+              <div className="h-7 sm:h-9 w-24 sm:w-32 bg-gradient-to-r from-muted to-muted/50 rounded-lg animate-pulse mt-2" />
             ) : (
-              <p className="text-lg sm:text-2xl font-semibold tracking-tight font-mono mt-1 truncate">{c.value}</p>
+              <p className="text-xl sm:text-3xl font-bold tracking-tight font-mono mt-2 truncate bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">{c.value}</p>
             )}
           </div>
         </div>
