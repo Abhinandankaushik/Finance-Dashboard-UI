@@ -14,24 +14,49 @@ const categories = [
 ];
 
 function exportCSV(data: any[]) {
-  const headers = ['Date', 'Description', 'Category', 'Type', 'Amount'];
-  const rows = data.map(t => [t.date, t.description, t.category, t.type, t.amount]);
-  const csv = [headers, ...rows].map(r => r.map((c: any) => `"${c}"`).join(',')).join('\n');
-  downloadFile(csv, 'transactions.csv', 'text/csv');
+  try {
+    if (!Array.isArray(data) || data.length === 0) {
+      alert('No transactions to export');
+      return;
+    }
+    
+    const headers = ['Date', 'Description', 'Category', 'Type', 'Amount'];
+    const rows = data.map(t => [t.date, t.description, t.category, t.type, t.amount]);
+    const csv = [headers, ...rows].map(r => r.map((c: any) => `"${c}"`).join(',')).join('\n');
+    downloadFile(csv, 'transactions.csv', 'text/csv');
+  } catch (error) {
+    console.error('Error exporting CSV:', error);
+    alert('Failed to export CSV');
+  }
 }
 
 function exportJSON(data: any[]) {
-  downloadFile(JSON.stringify(data, null, 2), 'transactions.json', 'application/json');
+  try {
+    if (!Array.isArray(data) || data.length === 0) {
+      alert('No transactions to export');
+      return;
+    }
+    
+    downloadFile(JSON.stringify(data, null, 2), 'transactions.json', 'application/json');
+  } catch (error) {
+    console.error('Error exporting JSON:', error);
+    alert('Failed to export JSON');
+  }
 }
 
 function downloadFile(content: string, filename: string, type: string) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  try {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    alert('Failed to download file');
+  }
 }
 
 export function TransactionsTable() {
@@ -176,7 +201,19 @@ export function TransactionsTable() {
                       </td>
                       {role === 'admin' && (
                         <td className="py-2 px-2 text-right">
-                          <Button variant="ghost" size="icon" className="h-6 w-6 transition-colors" onClick={() => deleteTransaction(t.id)}>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-6 w-6 transition-colors" 
+                            onClick={() => {
+                              if (confirm('Are you sure you want to delete this transaction?')) {
+                                deleteTransaction(t.id).catch(error => {
+                                  const message = error instanceof Error ? error.message : 'Failed to delete transaction';
+                                  alert(message);
+                                });
+                              }
+                            }}
+                          >
                             <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-expense" />
                           </Button>
                         </td>

@@ -24,18 +24,42 @@ export function AddTransactionDialog() {
     date: new Date().toISOString().split('T')[0],
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.description || !form.amount) return;
-    addTransaction({
-      description: form.description,
-      amount: parseFloat(form.amount),
-      type: form.type,
-      category: form.category,
-      date: form.date,
-    });
-    setForm({ description: '', amount: '', type: 'expense', category: 'Other', date: new Date().toISOString().split('T')[0] });
-    setOpen(false);
+    
+    // Validation
+    const trimmedDesc = form.description.trim();
+    const amount = parseFloat(form.amount);
+    
+    if (!trimmedDesc) {
+      alert('Please enter a description');
+      return;
+    }
+    
+    if (!form.amount || amount <= 0 || !isFinite(amount)) {
+      alert('Please enter a valid amount greater than 0');
+      return;
+    }
+    
+    if (!form.date) {
+      alert('Please select a date');
+      return;
+    }
+    
+    try {
+      await addTransaction({
+        description: trimmedDesc,
+        amount,
+        type: form.type,
+        category: form.category,
+        date: form.date,
+      });
+      setForm({ description: '', amount: '', type: 'expense', category: 'Other', date: new Date().toISOString().split('T')[0] });
+      setOpen(false);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to add transaction';
+      alert(message);
+    }
   };
 
   return (

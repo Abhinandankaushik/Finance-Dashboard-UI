@@ -58,13 +58,28 @@ export function convertCurrency(
   fromCurrency: string,
   toCurrency: string
 ): number {
+  // Validate inputs
+  if (typeof amount !== 'number' || !isFinite(amount)) {
+    console.error('Invalid amount for conversion:', amount);
+    return 0;
+  }
+  
   if (fromCurrency === toCurrency) return amount;
   
-  // Convert to USD first, then to target currency
-  const amountInUSD = amount / (CURRENCY_RATES[fromCurrency] || 1);
-  const convertedAmount = amountInUSD * (CURRENCY_RATES[toCurrency] || 1);
+  const fromRate = CURRENCY_RATES[fromCurrency];
+  const toRate = CURRENCY_RATES[toCurrency];
   
-  return convertedAmount;
+  // Validate rates exist and are valid
+  if (!fromRate || !toRate || fromRate <= 0 || toRate <= 0) {
+    console.error(`Invalid conversion rates: ${fromCurrency}=${fromRate}, ${toCurrency}=${toRate}`);
+    return amount; // Return original amount as fallback
+  }
+  
+  // Convert to USD first, then to target currency
+  const amountInUSD = amount / fromRate;
+  const convertedAmount = amountInUSD * toRate;
+  
+  return isFinite(convertedAmount) ? convertedAmount : amount;
 }
 
 export function formatCurrency(

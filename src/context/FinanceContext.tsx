@@ -18,8 +18,8 @@ interface FinanceContextType {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   filteredTransactions: Transaction[];
-  addTransaction: (t: Omit<Transaction, 'id'>) => void;
-  deleteTransaction: (id: string) => void;
+  addTransaction: (t: Omit<Transaction, 'id'>) => Promise<void>;
+  deleteTransaction: (id: string) => Promise<void>;
   totalBalance: number;
   totalIncome: number;
   totalExpenses: number;
@@ -61,16 +61,28 @@ export function FinanceProvider({ children }: { children: React.ReactNode }) {
   }, [role]);
 
   const addTransaction = useCallback(async (t: Omit<Transaction, 'id'>) => {
-    const newTxn = await api.addTransaction(t);
-    setTransactions(prev => {
-      const next = [newTxn, ...prev].sort((a, b) => b.date.localeCompare(a.date));
-      return next;
-    });
+    try {
+      const newTxn = await api.addTransaction(t);
+      setTransactions(prev => {
+        const next = [newTxn, ...prev].sort((a, b) => b.date.localeCompare(a.date));
+        return next;
+      });
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      const message = error instanceof Error ? error.message : 'Failed to add transaction';
+      throw new Error(message);
+    }
   }, []);
 
   const deleteTransaction = useCallback(async (id: string) => {
-    await api.deleteTransaction(id);
-    setTransactions(prev => prev.filter(t => t.id !== id));
+    try {
+      await api.deleteTransaction(id);
+      setTransactions(prev => prev.filter(t => t.id !== id));
+    } catch (error) {
+      console.error('Error deleting transaction:', error);
+      const message = error instanceof Error ? error.message : 'Failed to delete transaction';
+      throw new Error(message);
+    }
   }, []);
 
   const filteredTransactions = useMemo(() => {
