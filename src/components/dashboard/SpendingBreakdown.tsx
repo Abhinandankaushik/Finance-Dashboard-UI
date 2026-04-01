@@ -32,17 +32,17 @@ export function SpendingBreakdown() {
   const total = data.reduce((s, d) => s + d.value, 0);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const chartRadius = isMobile ? 50 : 60;
-  const chartInnerRadius = isMobile ? 30 : 35;
+  const chartRadius = isMobile ? 65 : 70;
+  const chartInnerRadius = isMobile ? 40 : 45;
 
   return (
     <div className="glass-card rounded-xl p-4 sm:p-5 lg:p-6">
       <h3 className="text-sm sm:text-base font-semibold text-foreground mb-4 sm:mb-5">Spending Breakdown</h3>
       
-      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 items-center lg:items-start">
+      <div className="flex flex-col gap-4 sm:gap-6">
         {/* Chart Section */}
-        <div className="flex justify-center w-full sm:w-auto">
-          <div style={{ width: 'clamp(160px, 50vw, 300px)', height: 'clamp(160px, 50vw, 300px)' }}>
+        <div className="flex justify-center w-full">
+          <div style={{ width: 'clamp(220px, 60vw, 320px)', height: 'clamp(220px, 60vw, 320px)' }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie 
@@ -76,26 +76,25 @@ export function SpendingBreakdown() {
         </div>
 
         {/* Legend Section */}
-        <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 h-fit">
-            {data.map((d, i) => {
-              const percentage = ((d.value / total) * 100).toFixed(1);
-              return (
-                <div key={d.name} className="flex items-start gap-3 p-2.5 sm:p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors hover:shadow-md">
-                  <span 
-                    className="w-3 h-3 flex-shrink-0 rounded-full mt-1" 
-                    style={{ background: COLORS[i % COLORS.length] }} 
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs sm:text-sm font-medium text-foreground break-words line-clamp-2">{d.name}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">
-                      {convertAndFormat(d.value)} • {percentage}%
-                    </div>
-                  </div>
+        <div className="w-full space-y-2 sm:space-y-2.5">
+          {data.map((d, i) => {
+            const percentage = ((d.value / total) * 100).toFixed(1);
+            return (
+              <div key={d.name} className="flex items-center gap-3 p-3 sm:p-3.5 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-all duration-300 hover:shadow-md hover:scale-105">
+                <span 
+                  className="w-4 h-4 flex-shrink-0 rounded-full" 
+                  style={{ background: COLORS[i % COLORS.length] }} 
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm sm:text-base font-medium text-foreground">{d.name}</div>
                 </div>
-              );
-            })}
-          </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400">{convertAndFormat(d.value)}</span>
+                  <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-0.5 rounded">{percentage}%</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

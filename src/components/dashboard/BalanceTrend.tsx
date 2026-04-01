@@ -107,9 +107,9 @@ export function BalanceTrend() {
       </div>
 
       {/* Chart */}
-      <div className="w-full flex justify-center animate-fadeIn overflow-hidden" style={{ height: 'clamp(240px, 50vh, 400px)', animationDelay: '100ms' }}>
+      <div className="w-full flex justify-center items-center animate-fadeIn" style={{ height: 'clamp(240px, 50vh, 400px)', animationDelay: '100ms' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 20, right: 15, bottom: 10, left: 55 }}>
+          <AreaChart data={data} margin={{ top: 20, right: 0, bottom: 10, left: 0 }}>
             <defs>
               <linearGradient id="balGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(217,91%,60%)" stopOpacity={0.4} />
@@ -128,14 +128,14 @@ export function BalanceTrend() {
             <XAxis 
               dataKey="month" 
               className="text-xs"
-              tick={{ fill: 'hsl(220,10%,50%)', fontSize: 12 }}
+              tick={{ fill: 'hsl(220,10%,50%)', fontSize: 11 }}
               axisLine={{ stroke: 'hsl(220,13%,91%)' }}
-              height={30}
+              height={25}
             />
             <YAxis 
               tick={{ fill: 'hsl(220,10%,50%)', fontSize: 12 }}
               axisLine={{ stroke: 'hsl(220,13%,91%)' }}
-              width={55}
+              width={45}
               tickFormatter={v => abbreviateAmount(v)}
             />
             <Tooltip
