@@ -65,16 +65,17 @@ export function InsightsPanel() {
   ];
 
   return (
-    <div className="glass-card rounded-xl p-5">
-      <h3 className="text-sm font-medium text-muted-foreground mb-4">Insights</h3>
+    <div className="glass-card rounded-xl p-5 animate-fade-in-blur" style={{ animationDelay: '0.25s', animationFillMode: 'both' }}>
+      <h3 className="text-sm font-medium text-muted-foreground mb-4 animate-slide-in-left">Insights</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        {cards.map(c => (
-          <div key={c.label} className="flex items-start gap-3 p-3 sm:p-4 rounded-lg bg-muted/30">
-            <c.icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+        {cards.map((c, i) => (
+          <div key={c.label} className="flex items-start gap-3 p-3 sm:p-4 rounded-lg bg-muted/30 transition-all duration-500 hover:bg-muted/50 hover:shadow-lg hover:scale-105 hover:-translate-y-1 group animate-bounce-in cursor-pointer"
+               style={{ animationDelay: `${i * 100}ms`, animationFillMode: 'both' }}>
+            <c.icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mt-0.5 flex-shrink-0 transition-all duration-300 group-hover:rotate-12 group-hover:scale-125" />
             <div className="min-w-0 flex-1">
-              <p className="text-xs text-muted-foreground">{c.label}</p>
-              <p className={`text-base sm:text-lg font-semibold font-mono ${c.highlight || ''} truncate`}>{c.value}</p>
-              {c.sub && <p className="text-xs text-muted-foreground truncate">{c.sub}</p>}
+              <p className="text-xs text-muted-foreground transition-colors duration-300">{c.label}</p>
+              <p className={`text-base sm:text-lg font-semibold font-mono ${c.highlight || ''} truncate transition-all duration-300 group-hover:animate-color-shift`}>{c.value}</p>
+              {c.sub && <p className="text-xs text-muted-foreground truncate transition-colors duration-300">{c.sub}</p>}
             </div>
           </div>
         ))}

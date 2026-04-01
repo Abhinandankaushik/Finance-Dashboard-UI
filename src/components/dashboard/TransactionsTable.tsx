@@ -189,14 +189,14 @@ export function TransactionsTable() {
                   <tr><td colSpan={5} className="text-center py-8 sm:py-12 text-xs sm:text-sm text-muted-foreground">No transactions</td></tr>
                 ) : (
                   txns.slice(0, 50).map((t, i) => (
-                    <tr key={t.id} className="border-b border-border/50 hover:bg-muted/30 transition-all duration-200"
-                        style={{ animationDelay: `${i * 20}ms` }}>
-                      <td className="py-2 px-2 font-mono text-xs text-muted-foreground whitespace-nowrap">{t.date}</td>
-                      <td className="py-2 px-2 truncate max-w-xs text-xs">{t.description}</td>
+                    <tr key={t.id} className="border-b border-border/50 hover:bg-muted/50 hover:shadow-md transition-all duration-300 hover:-translate-x-1 hover:scale-y-105 animate-slide-in-left"
+                        style={{ animationDelay: `${i * 30}ms`, animationFillMode: 'both' }}>
+                      <td className="py-2 px-2 font-mono text-xs text-muted-foreground whitespace-nowrap transition-colors duration-300">{t.date}</td>
+                      <td className="py-2 px-2 truncate max-w-xs text-xs transition-colors duration-300">{t.description}</td>
                       <td className="py-2 px-2 hidden sm:table-cell">
-                        <span className="text-xs bg-secondary px-2 py-0.5 rounded-full whitespace-nowrap">{t.category}</span>
+                        <span className="text-xs bg-secondary px-2 py-0.5 rounded-full whitespace-nowrap transition-all duration-300 hover:shadow-md">{t.category}</span>
                       </td>
-                      <td className={`py-2 px-2 text-right font-mono font-medium text-xs whitespace-nowrap ${t.type === 'income' ? 'text-income' : 'text-expense'}`}>
+                      <td className={`py-2 px-2 text-right font-mono font-medium text-xs whitespace-nowrap transition-all duration-300 ${t.type === 'income' ? 'text-income hover:animate-color-shift' : 'text-expense'}`}>
                         {t.type === 'income' ? '+' : '-'}{convertAndFormat(t.amount).replace(/^-?/, '')}
                       </td>
                       {role === 'admin' && (
