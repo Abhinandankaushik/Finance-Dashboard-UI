@@ -5,9 +5,7 @@ import { BalanceTrend } from '@/components/dashboard/BalanceTrend';
 import { SpendingBreakdown } from '@/components/dashboard/SpendingBreakdown';
 import { TransactionsTable } from '@/components/dashboard/TransactionsTable';
 import { InsightsPanel } from '@/components/dashboard/InsightsPanel';
-import { RoleToggle } from '@/components/dashboard/RoleToggle';
-import { DarkModeToggle } from '@/components/dashboard/DarkModeToggle';
-import { CurrencySelector } from '@/components/dashboard/CurrencySelector';
+import { MobileNav } from '@/components/MobileNav';
 import { BarChart3 } from 'lucide-react';
 
 const Index = () => {
@@ -27,11 +25,7 @@ const Index = () => {
                 <p className="text-xs text-muted-foreground animate-fade-in-scale" style={{ animationDelay: '100ms' }}>Smart Finance Dashboard</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              <CurrencySelector />
-              <RoleToggle />
-              <DarkModeToggle />
-            </div>
+            <MobileNav />
           </div>
         </header>
 

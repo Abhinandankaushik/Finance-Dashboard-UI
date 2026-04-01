@@ -107,9 +107,9 @@ export function BalanceTrend() {
       </div>
 
       {/* Chart */}
-      <div className="h-48 sm:h-56 md:h-72 w-full animate-fadeIn overflow-x-auto" style={{ animationDelay: '100ms' }}>
+      <div className="w-full flex justify-center animate-fadeIn overflow-hidden" style={{ height: 'clamp(240px, 50vh, 400px)', animationDelay: '100ms' }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 15, right: 30, bottom: 15, left: 80 }}>
+          <AreaChart data={data} margin={{ top: 20, right: 15, bottom: 10, left: 55 }}>
             <defs>
               <linearGradient id="balGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="hsl(217,91%,60%)" stopOpacity={0.4} />
@@ -130,11 +130,12 @@ export function BalanceTrend() {
               className="text-xs"
               tick={{ fill: 'hsl(220,10%,50%)', fontSize: 12 }}
               axisLine={{ stroke: 'hsl(220,13%,91%)' }}
+              height={30}
             />
             <YAxis 
               tick={{ fill: 'hsl(220,10%,50%)', fontSize: 12 }}
               axisLine={{ stroke: 'hsl(220,13%,91%)' }}
-              width={75}
+              width={55}
               tickFormatter={v => abbreviateAmount(v)}
             />
             <Tooltip
@@ -143,22 +144,22 @@ export function BalanceTrend() {
                 border: '2px solid hsl(217,91%,60%)',
                 borderRadius: 12,
                 fontSize: 12,
-                boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
-                padding: '12px'
+                boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                padding: '10px 14px'
               }}
-              labelStyle={{ color: 'hsl(220,13%,13%)' }}
+              labelStyle={{ color: 'hsl(220,13%,13%)', fontSize: 12, fontWeight: 'bold' }}
               formatter={(value: number, name: string) => {
                 const names: Record<string, string> = {
-                  balance: '💰 Balance',
-                  income: '📈 Income',
-                  expenses: '📊 Expenses'
+                  balance: 'Balance',
+                  income: 'Income',
+                  expenses: 'Expenses'
                 };
                 return [convertAndFormat(value), names[name] || name];
               }}
               cursor={{ stroke: 'hsl(217,91%,60%)', strokeWidth: 2, opacity: 0.1 }}
             />
             <Legend 
-              wrapperStyle={{ paddingTop: '12px', fontSize: '12px' }}
+              wrapperStyle={{ paddingTop: '12px', fontSize: '12px', fontWeight: 500 }}
               iconType="line"
               height={20}
             />
